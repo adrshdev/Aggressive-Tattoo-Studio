@@ -66,6 +66,10 @@
         background: linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.35));
       }
       
+      .dropdown-bg {
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.98));
+      }
+      
       .grain {
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="g"><feTurbulence baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23g)" opacity="0.03"/></svg>');
         mix-blend-mode: overlay;
@@ -77,8 +81,38 @@
       100% { left: 120%; }
     }
     
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+    
     .loader-bar {
       animation: loader 2s linear infinite;
+    }
+    
+    .dropdown-menu {
+      animation: slideDown 0.2s ease-out;
+    }
+    
+    .dropdown-menu.closing {
+      animation: slideUp 0.15s ease-in;
     }
   </style>
 </head>
@@ -95,14 +129,14 @@
 
   <!-- Lightbox -->
   <div id="lightbox" class="fixed inset-0 hidden items-center justify-center bg-black/90 z-[200]" role="dialog" aria-hidden="true" aria-label="Image preview">
-    <button id="lightboxClose" aria-label="Close preview" class="absolute top-7 right-7 bg-transparent border-none text-gold text-xl p-2 z-[210]">✕</button>
+    <button id="lightboxClose" aria-label="Close preview" class="absolute top-7 right-7 bg-transparent border-none text-gold text-xl p-2 z-[210] hover:scale-110 transition-transform cursor-pointer">✕</button>
     <img id="lightboxImage" src="" alt="Expanded artwork" class="max-w-[92%] max-h-[86%] rounded-lg shadow-2xl">
   </div>
 
   <!-- Header / Nav -->
   <header class="fixed left-0 right-0 top-0 z-[60] nav-gradient border-b border-gold-subtle backdrop-blur-md">
     <div class="max-w-[1200px] mx-auto px-5 h-[72px] flex items-center justify-between">
-      <a class="flex items-center gap-3 no-underline text-gold" href="#home" aria-label="Aggressive Tattoo Home">
+      <a class="flex items-center gap-3 no-underline text-gold transition-transform hover:scale-105" href="#home" aria-label="Aggressive Tattoo Home">
         <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[#1f1f1f] to-[rgba(226,221,180,0.06)] grid place-items-center border border-gold-subtle shadow-2xl" aria-hidden="true">
           <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[#E2DDB4] to-white text-black font-extrabold grid place-items-center">AG</div>
         </div>
@@ -114,39 +148,96 @@
 
       <nav aria-label="Primary navigation" class="hidden lg:block">
         <ul class="flex gap-5 items-center">
-          <li><a href="#home" class="text-gold no-underline font-semibold opacity-95 hover:text-white">HOME</a></li>
-          <li><a href="#gallery" class="text-gold no-underline font-semibold opacity-95 hover:text-white">GALLERY</a></li>
-          <li><a href="#artists" class="text-gold no-underline font-semibold opacity-95 hover:text-white">ARTISTS</a></li>
-          <li><a href="#about" class="text-gold no-underline font-semibold opacity-95 hover:text-white">ABOUT</a></li>
-          <li><a href="#contact" class="text-gold no-underline font-semibold opacity-95 hover:text-white">CONTACT</a></li>
+          <li><a href="#home" class="text-gold no-underline font-semibold opacity-95 hover:text-white transition-colors">HOME</a></li>
+          <li><a href="#gallery" class="text-gold no-underline font-semibold opacity-95 hover:text-white transition-colors">GALLERY</a></li>
+          
+          <!-- Services Dropdown -->
+          <li class="relative group">
+            <button class="text-gold no-underline font-semibold opacity-95 hover:text-white transition-colors flex items-center gap-1" aria-haspopup="true" aria-expanded="false">
+              SERVICES
+              <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-56 dropdown-bg rounded-xl border border-gold-subtle backdrop-blur-md shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 dropdown-menu">
+              <div class="p-2">
+                <a href="#" class="block px-4 py-3 text-gold hover:bg-white/5 rounded-lg transition-colors no-underline">
+                  <div class="font-semibold">Custom Tattoos</div>
+                  <div class="text-xs text-muted">Bespoke designs tailored to you</div>
+                </a>
+                <a href="#" class="block px-4 py-3 text-gold hover:bg-white/5 rounded-lg transition-colors no-underline">
+                  <div class="font-semibold">Realism & Portraits</div>
+                  <div class="text-xs text-muted">Hyper-realistic artwork</div>
+                </a>
+                <a href="#" class="block px-4 py-3 text-gold hover:bg-white/5 rounded-lg transition-colors no-underline">
+                  <div class="font-semibold">Blackwork</div>
+                  <div class="text-xs text-muted">Bold, solid black designs</div>
+                </a>
+                <a href="#" class="block px-4 py-3 text-gold hover:bg-white/5 rounded-lg transition-colors no-underline">
+                  <div class="font-semibold">Cover-ups</div>
+                  <div class="text-xs text-muted">Transform old tattoos</div>
+                </a>
+              </div>
+            </div>
+          </li>
+          
+          <li><a href="#artists" class="text-gold no-underline font-semibold opacity-95 hover:text-white transition-colors">ARTISTS</a></li>
+          <li><a href="#about" class="text-gold no-underline font-semibold opacity-95 hover:text-white transition-colors">ABOUT</a></li>
+          <li><a href="#contact" class="text-gold no-underline font-semibold opacity-95 hover:text-white transition-colors">CONTACT</a></li>
         </ul>
       </nav>
 
       <div class="flex items-center gap-3">
         <a href="#contact" class="bg-gold text-black px-4 py-2.5 rounded-lg font-bold shadow-lg hover:-translate-y-1 hover:shadow-2xl transition-all duration-200">Book Now</a>
-        <button id="hambtn" class="w-11 h-11 rounded-lg grid place-items-center bg-transparent border border-gold-subtle lg:hidden" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
-          <svg width="20" height="14" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-            <path class="line1" d="M2 2h20"></path>
-            <path class="line2" d="M2 7h20"></path>
-            <path class="line3" d="M2 12h20"></path>
+        <button id="hambtn" class="w-11 h-11 rounded-lg grid place-items-center bg-transparent border border-gold-subtle lg:hidden hover:bg-white/5 transition-colors" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+          <svg width="20" height="14" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="transition-transform">
+            <path class="line1 transition-all origin-center" d="M2 2h20"></path>
+            <path class="line2 transition-all" d="M2 7h20"></path>
+            <path class="line3 transition-all origin-center" d="M2 12h20"></path>
           </svg>
         </button>
       </div>
     </div>
 
     <!-- Mobile full-screen nav -->
-    <div id="mobileMenu" aria-hidden="true" class="fixed inset-0 z-50 bg-black/95 hidden">
-      <div class="max-w-[1200px] mx-auto px-5 pt-24">
-        <ul class="flex flex-col gap-5 text-2xl">
-          <li><a href="#home" class="mobile-link text-gold no-underline font-semibold">HOME</a></li>
-          <li><a href="#gallery" class="mobile-link text-gold no-underline font-semibold">GALLERY</a></li>
-          <li><a href="#artists" class="mobile-link text-gold no-underline font-semibold">ARTISTS</a></li>
-          <li><a href="#about" class="mobile-link text-gold no-underline font-semibold">ABOUT</a></li>
-          <li><a href="#contact" class="mobile-link text-gold no-underline font-semibold">CONTACT</a></li>
-        </ul>
-        <div class="mt-7 text-muted">
-          <div>Phone: (555) 123-4567</div>
-          <div class="mt-1.5">Email: info@aggressivetattoo.com</div>
+    <div id="mobileMenu" aria-hidden="true" class="fixed top-0 left-0 right-0 bottom-0 z-50 bg-gold hidden" style="height: 100vh; min-height: 100vh;">
+      <div class="h-full overflow-y-auto">
+        <!-- Close Button -->
+        <button id="closeMobileMenu" aria-label="Close menu" class="absolute top-6 right-6 w-11 h-11 rounded-lg grid place-items-center bg-black/10 hover:bg-black/20 transition-colors z-[60]">
+          <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+        <div class="max-w-[1200px] mx-auto px-5 pt-24 pb-12">
+          <ul class="flex flex-col gap-5 text-2xl">
+            <li><a href="#home" class="mobile-link text-black no-underline font-semibold hover:opacity-70 transition-opacity block py-2">HOME</a></li>
+            <li><a href="#gallery" class="mobile-link text-black no-underline font-semibold hover:opacity-70 transition-opacity block py-2">GALLERY</a></li>
+            
+            <!-- Mobile Services Dropdown -->
+            <li class="mobile-dropdown">
+              <button class="mobile-dropdown-btn text-black no-underline font-semibold hover:opacity-70 transition-opacity flex items-center justify-between w-full py-2" aria-expanded="false">
+                SERVICES
+                <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              <div class="mobile-dropdown-content hidden mt-3 ml-4 space-y-2 text-lg">
+                <a href="#" class="block text-black/70 hover:text-black transition-colors no-underline py-2">Custom Tattoos</a>
+                <a href="#" class="block text-black/70 hover:text-black transition-colors no-underline py-2">Realism & Portraits</a>
+                <a href="#" class="block text-black/70 hover:text-black transition-colors no-underline py-2">Blackwork</a>
+                <a href="#" class="block text-black/70 hover:text-black transition-colors no-underline py-2">Cover-ups</a>
+              </div>
+            </li>
+            
+            <li><a href="#artists" class="mobile-link text-black no-underline font-semibold hover:opacity-70 transition-opacity block py-2">ARTISTS</a></li>
+            <li><a href="#about" class="mobile-link text-black no-underline font-semibold hover:opacity-70 transition-opacity block py-2">ABOUT</a></li>
+            <li><a href="#contact" class="mobile-link text-black no-underline font-semibold hover:opacity-70 transition-opacity block py-2">CONTACT</a></li>
+          </ul>
+          <div class="mt-7 text-black/70 pb-8">
+            <div class="py-1">Phone: (555) 123-4567</div>
+            <div class="mt-1.5 py-1">Email: info@aggressivetattoo.com</div>
+          </div>
         </div>
       </div>
     </div>
@@ -170,7 +261,7 @@
 
         <div class="mt-5 flex gap-3 justify-center flex-wrap">
           <a class="bg-gold text-black px-4 py-2.5 rounded-lg font-bold shadow-lg hover:-translate-y-1 hover:shadow-2xl transition-all duration-200" href="#contact">Book Appointment</a>
-          <button id="exploreBtn" class="inline-flex gap-3 items-center px-4 py-3 rounded-xl border border-gold-subtle bg-transparent" aria-label="Explore Gallery">
+          <button id="exploreBtn" class="inline-flex gap-3 items-center px-4 py-3 rounded-xl border border-gold-subtle bg-transparent hover:bg-white/5 transition-colors" aria-label="Explore Gallery">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-90"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             Explore Work
           </button>
@@ -189,17 +280,17 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="galleryGrid">
           <!-- Tile 1 -->
           <figure class="tile relative overflow-hidden rounded-2xl bg-[#0b0b0b] border border-gold-subtle hover:-translate-y-3 hover:shadow-2xl transition-all duration-500 cursor-pointer" data-full="https://images.unsplash.com/photo-1602524209293-e15c9f1f6f92?auto=format&fit=crop&w=1600&q=80" tabindex="0">
-            <img loading="lazy" alt="Traditional Tattoo" src="./images/t1.jpg" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+            <img loading="lazy" alt="Traditional Tattoo" src="https://images.unsplash.com/photo-1602524209293-e15c9f1f6f92?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
           </figure>
 
           <!-- Tile 2 -->
           <figure class="tile relative overflow-hidden rounded-2xl bg-[#0b0b0b] border border-gold-subtle hover:-translate-y-3 hover:shadow-2xl transition-all duration-500 cursor-pointer" data-full="https://images.unsplash.com/photo-1556228453-5b9bfae4f3cf?auto=format&fit=crop&w=1600&q=80" tabindex="0">
-            <img loading="lazy" alt="Realism Tattoo" src="./images/t2.jpg" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+            <img loading="lazy" alt="Realism Tattoo" src="https://images.unsplash.com/photo-1556228453-5b9bfae4f3cf?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
           </figure>
 
           <!-- Tile 3 -->
           <figure class="tile relative overflow-hidden rounded-2xl bg-[#0b0b0b] border border-gold-subtle hover:-translate-y-3 hover:shadow-2xl transition-all duration-500 cursor-pointer" data-full="https://images.unsplash.com/photo-1604147706283-84f9e3f2a1b3?auto=format&fit=crop&w=1600&q=80" tabindex="0">
-            <img loading="lazy" alt="Geometric Tattoo" src="./images/t3.jpg" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+            <img loading="lazy" alt="Geometric Tattoo" src="https://images.unsplash.com/photo-1604147706283-84f9e3f2a1b3?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
           </figure>
         </div>
 
@@ -278,17 +369,17 @@
 
             <form id="contactForm" class="p-6 rounded-xl form-bg border border-gold-subtle mt-5" novalidate>
               <label class="sr-only" for="name">Name</label>
-              <input id="name" name="name" type="text" placeholder="Your name" required class="w-full px-3.5 py-3 rounded-lg bg-transparent border border-gold-subtle text-gold outline-none text-base placeholder:text-gold/30">
+              <input id="name" name="name" type="text" placeholder="Your name" required class="w-full px-3.5 py-3 rounded-lg bg-transparent border border-gold-subtle text-gold outline-none text-base placeholder:text-gold/30 focus:border-gold/40 transition-colors">
 
               <div class="h-2.5"></div>
 
               <label class="sr-only" for="email">Email</label>
-              <input id="email" name="email" type="email" placeholder="Your email" required class="w-full px-3.5 py-3 rounded-lg bg-transparent border border-gold-subtle text-gold outline-none text-base placeholder:text-gold/30">
+              <input id="email" name="email" type="email" placeholder="Your email" required class="w-full px-3.5 py-3 rounded-lg bg-transparent border border-gold-subtle text-gold outline-none text-base placeholder:text-gold/30 focus:border-gold/40 transition-colors">
 
               <div class="h-2.5"></div>
 
               <label class="sr-only" for="message">Message</label>
-              <textarea id="message" name="message" rows="5" placeholder="Tell us about your idea" required class="w-full px-3.5 py-3 rounded-lg bg-transparent border border-gold-subtle text-gold outline-none text-base resize-none placeholder:text-gold/30"></textarea>
+              <textarea id="message" name="message" rows="5" placeholder="Tell us about your idea" required class="w-full px-3.5 py-3 rounded-lg bg-transparent border border-gold-subtle text-gold outline-none text-base resize-none placeholder:text-gold/30 focus:border-gold/40 transition-colors"></textarea>
 
               <div class="flex gap-3 items-center justify-end mt-3 flex-wrap">
                 <div id="formMsg" class="text-muted text-sm"></div>
@@ -327,19 +418,20 @@
   </footer>
 
   <div id="galleryModal" class="fixed inset-0 hidden items-center justify-center bg-black/90 z-[200]" role="dialog" aria-hidden="true" aria-label="Full gallery">
-    <button id="closeGalleryModal" aria-label="Close gallery" class="absolute top-7 right-7 bg-transparent border-none text-gold text-xl p-2 z-[210]">✕</button>
+    <button id="closeGalleryModal" aria-label="Close gallery" class="absolute top-7 right-7 bg-transparent border-none text-gold text-xl p-2 z-[210] hover:scale-110 transition-transform cursor-pointer">✕</button>
     <div class="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-h-[88vh] overflow-auto p-8">
-      <img src="./images/t1.jpg" alt="Tattoo sample 1" loading="lazy" class="w-full h-auto rounded-lg">
-      <img src="./images/t2.jpg" alt="Tattoo sample 2" loading="lazy" class="w-full h-auto rounded-lg">
-      <img src="./images/t3.jpg" alt="Tattoo sample 3" loading="lazy" class="w-full h-auto rounded-lg">
-      <img src="./images/t4.jpg" alt="Tattoo sample 4" loading="lazy" class="w-full h-auto rounded-lg">
-      <img src="./images/t5.jpg" alt="Tattoo sample 5" loading="lazy" class="w-full h-auto rounded-lg">
-      <img src="./images/t6.jpg" alt="Tattoo sample 6" loading="lazy" class="w-full h-auto rounded-lg">
+      <img src="https://images.unsplash.com/photo-1602524209293-e15c9f1f6f92?auto=format&fit=crop&w=600&q=80" alt="Tattoo sample 1" loading="lazy" class="w-full h-auto rounded-lg hover:scale-105 transition-transform cursor-pointer">
+      <img src="https://images.unsplash.com/photo-1556228453-5b9bfae4f3cf?auto=format&fit=crop&w=600&q=80" alt="Tattoo sample 2" loading="lazy" class="w-full h-auto rounded-lg hover:scale-105 transition-transform cursor-pointer">
+      <img src="https://images.unsplash.com/photo-1604147706283-84f9e3f2a1b3?auto=format&fit=crop&w=600&q=80" alt="Tattoo sample 3" loading="lazy" class="w-full h-auto rounded-lg hover:scale-105 transition-transform cursor-pointer">
+      <img src="https://images.unsplash.com/photo-1590246814883-57c511a5c527?auto=format&fit=crop&w=600&q=80" alt="Tattoo sample 4" loading="lazy" class="w-full h-auto rounded-lg hover:scale-105 transition-transform cursor-pointer">
+      <img src="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=600&q=80" alt="Tattoo sample 5" loading="lazy" class="w-full h-auto rounded-lg hover:scale-105 transition-transform cursor-pointer">
+      <img src="https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=600&q=80" alt="Tattoo sample 6" loading="lazy" class="w-full h-auto rounded-lg hover:scale-105 transition-transform cursor-pointer">
     </div>
   </div>
 
   <!-- SCRIPTS -->
   <script>
+    // Gallery Modal
     (function(){
       const openBtn = document.getElementById('exploreMoreBtn');
       const modal = document.getElementById('galleryModal');
@@ -364,9 +456,32 @@
       });
     })();
 
+    // Mobile Dropdown Toggle
+    (function(){
+      const mobileDropdownBtn = document.querySelector('.mobile-dropdown-btn');
+      const mobileDropdownContent = document.querySelector('.mobile-dropdown-content');
+      const mobileDropdownSvg = mobileDropdownBtn.querySelector('svg');
+
+      mobileDropdownBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isExpanded = mobileDropdownBtn.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+          mobileDropdownContent.classList.add('hidden');
+          mobileDropdownBtn.setAttribute('aria-expanded', 'false');
+          mobileDropdownSvg.style.transform = 'rotate(0deg)';
+        } else {
+          mobileDropdownContent.classList.remove('hidden');
+          mobileDropdownBtn.setAttribute('aria-expanded', 'true');
+          mobileDropdownSvg.style.transform = 'rotate(180deg)';
+        }
+      });
+    })();
+
     const FORM_ENDPOINT = 'https://formspree.io/f/mzzpkwqj';
     gsap.registerPlugin(ScrollTrigger);
 
+    // Preloader
     (function(){
       const pre = document.getElementById('preloader');
       window.addEventListener('load', () => {
@@ -380,32 +495,58 @@
       });
     })();
 
+    // Mobile Nav Toggle with Hamburger Animation
     (function(){
       const hambtn = document.getElementById('hambtn');
       const mobile = document.getElementById('mobileMenu');
+      const closeBtn = document.getElementById('closeMobileMenu');
       const mobileLinks = mobile.querySelectorAll('a');
+      const line1 = hambtn.querySelector('.line1');
+      const line2 = hambtn.querySelector('.line2');
+      const line3 = hambtn.querySelector('.line3');
 
       function openMobile(){
-        mobile.classList.remove('hidden'); mobile.setAttribute('aria-hidden','false');
+        mobile.classList.remove('hidden'); 
+        mobile.setAttribute('aria-hidden','false');
         hambtn.setAttribute('aria-expanded','true');
         document.body.style.overflow = 'hidden';
-        mobileLinks[0].focus();
+        closeBtn.focus();
+        
+        // Animate to X
+        line1.setAttribute('d', 'M3 7h18');
+        line1.style.transform = 'rotate(45deg)';
+        line2.style.opacity = '0';
+        line3.setAttribute('d', 'M3 7h18');
+        line3.style.transform = 'rotate(-45deg)';
       }
+      
       function closeMobile(){
-        mobile.classList.add('hidden'); mobile.setAttribute('aria-hidden','true');
+        mobile.classList.add('hidden'); 
+        mobile.setAttribute('aria-hidden','true');
         hambtn.setAttribute('aria-expanded','false');
         document.body.style.overflow = '';
         hambtn.focus();
+        
+        // Animate back to hamburger
+        line1.setAttribute('d', 'M2 2h20');
+        line1.style.transform = 'rotate(0deg)';
+        line2.style.opacity = '1';
+        line3.setAttribute('d', 'M2 12h20');
+        line3.style.transform = 'rotate(0deg)';
       }
 
       hambtn.addEventListener('click', () => {
         if(mobile.classList.contains('hidden')) openMobile(); else closeMobile();
       });
 
+      closeBtn.addEventListener('click', closeMobile);
       mobile.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobile));
-      window.addEventListener('keydown', (e)=> { if(e.key === 'Escape' && !mobile.classList.contains('hidden')) closeMobile(); });
+      window.addEventListener('keydown', (e)=> { 
+        if(e.key === 'Escape' && !mobile.classList.contains('hidden')) closeMobile(); 
+      });
     })();
 
+    // Smooth scroll
     (function(){
       document.querySelectorAll('a[href^="#"]').forEach(a=>{
         a.addEventListener('click', (e)=>{
@@ -420,6 +561,7 @@
       });
     })();
 
+    // Hero Parallax
     (function(){
       const bg = document.getElementById('heroBg');
       gsap.to(bg, {
@@ -439,6 +581,7 @@
       gsap.from(".cta-btn", { scale: 0.95, opacity: 0, duration: 0.8, delay: 0.6, ease: "back.out(1.2)" });
     })();
 
+    // Gallery Lightbox
     (function(){
       const tiles = document.querySelectorAll('.tile');
       const lightbox = document.getElementById('lightbox');
@@ -450,30 +593,39 @@
         lbImg.alt = alt || 'Artwork preview';
         lightbox.style.display = 'flex';
         lightbox.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
       }
       function close(){
         lightbox.style.display = 'none';
         lightbox.setAttribute('aria-hidden','true');
         lbImg.src = '';
+        document.body.style.overflow = '';
       }
       tiles.forEach(tile=>{
         tile.addEventListener('click', ()=> open(tile.dataset.full, tile.querySelector('img').alt));
-        tile.addEventListener('keydown', (e) => { if(e.key === 'Enter') open(tile.dataset.full, tile.querySelector('img').alt); });
+        tile.addEventListener('keydown', (e) => { 
+          if(e.key === 'Enter') open(tile.dataset.full, tile.querySelector('img').alt); 
+        });
       });
       closeBtn.addEventListener('click', close);
       lightbox.addEventListener('click', (e)=> { if(e.target === lightbox) close(); });
-      window.addEventListener('keydown', (e)=> { if(e.key === 'Escape') close(); });
+      window.addEventListener('keydown', (e)=> { if(e.key === 'Escape' && lightbox.style.display === 'flex') close(); });
     })();
 
+    // Reveal Animations
     (function(){
       gsap.utils.toArray('.py-24').forEach(section=>{
-        gsap.fromTo(section.querySelectorAll('h3, p, .tile, .artist'), { y: 20, opacity: 0 }, {
-          y: 0, opacity: 1, duration: 0.9, stagger: 0.08,
-          scrollTrigger: { trigger: section, start: 'top 80%' }
-        });
+        gsap.fromTo(section.querySelectorAll('h3, p, .tile, .artist'), 
+          { y: 20, opacity: 0 }, 
+          {
+            y: 0, opacity: 1, duration: 0.9, stagger: 0.08,
+            scrollTrigger: { trigger: section, start: 'top 80%' }
+          }
+        );
       });
     })();
 
+    // Contact Form
     (function(){
       const form = document.getElementById('contactForm');
       const msgEl = document.getElementById('formMsg');
@@ -487,10 +639,12 @@
 
         if(!name || !email || !message){
           msgEl.textContent = 'Please fill all fields.';
+          msgEl.style.color = 'rgb(255,120,120)';
           return;
         }
         if(!/^\S+@\S+\.\S+$/.test(email)){
           msgEl.textContent = 'Please provide a valid email.';
+          msgEl.style.color = 'rgb(255,120,120)';
           return;
         }
 
@@ -524,6 +678,7 @@
       });
     })();
 
+    // Intersection Observer
     (function(){
       const io = new IntersectionObserver((entries)=>{
         entries.forEach(e=>{
@@ -537,13 +692,17 @@
       document.querySelectorAll('.tile, .artist').forEach(el => io.observe(el));
     })();
 
+    // Explore Button
     document.getElementById('exploreBtn').addEventListener('click', ()=> {
       document.getElementById('gallery').scrollIntoView({behavior:'smooth', block:'start'});
     });
 
+    // SR-Only CSS
     (function(){
       const css = '.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}';
-      const s = document.createElement('style'); s.appendChild(document.createTextNode(css)); document.head.appendChild(s);
+      const s = document.createElement('style'); 
+      s.appendChild(document.createTextNode(css)); 
+      document.head.appendChild(s);
     })();
   </script>
 </body>
