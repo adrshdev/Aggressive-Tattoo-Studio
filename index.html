@@ -1,0 +1,666 @@
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<!--
+  Aggressive Tattoo Studio — NEXT-LEVEL Single File
+  - Replace FORMSPREE_ENDPOINT with your Formspree endpoint
+  - Replace image URLs with your high-res assets (prefer WebP/AVIF for production)
+  - Tailwind CDN used for layout utilities; main styles below are custom to preserve aesthetic
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aggressive Tattoo Studio</title>
+  <meta name="description" content="Aggressive Tattoo Studio — premium tattoo artistry. Book now for bespoke tattoos, realism, blackwork and portraits." />
+  <meta name="keywords" content="tattoo, tattoo studio, blackwork, realism, custom tattoo, tattoo artist" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root{
+      --gold:#E2DDB4;
+      --gold-950:rgba(226,221,180,0.95);
+      --bg:#000;
+      --muted:rgba(226,221,180,0.6);
+      --glass: rgba(255,255,255,0.03);
+      --maxWidth:1200px;
+    }
+
+    /* Base reset */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:var(--bg);
+      color:var(--gold);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.3;
+      overflow-x:hidden;
+    }
+    .bebas{font-family:'Bebas Neue',sans-serif; letter-spacing:0.04em}
+
+    /* Utility container */
+    .wrap{max-width:var(--maxWidth);margin:0 auto;padding:0 20px;}
+
+    /* Top nav (elevated) */
+    header {
+      position:fixed;left:0;right:0;top:0;z-index:60;
+      background:linear-gradient(180deg, rgba(0,0,0,0.65), rgba(0,0,0,0.35));
+      border-bottom:1px solid rgba(226,221,180,0.06);
+      backdrop-filter: blur(6px);
+    }
+    .nav-inner {height:72px;display:flex;align-items:center;justify-content:space-between;}
+    .logo{
+      display:flex;align-items:center;gap:12px;
+      text-decoration:none;color:var(--gold);
+    }
+    .logo .mark{
+      width:44px;height:44px;border-radius:8px;
+      background:linear-gradient(135deg,#1f1f1f, rgba(226,221,180,0.06));
+      display:grid;place-items:center;border:1px solid rgba(226,221,180,0.08);
+      box-shadow:0 6px 18px rgba(0,0,0,0.6);
+      font-weight:700;color:var(--gold-950);
+    }
+    nav ul{display:flex;gap:22px;align-items:center}
+    nav a{color:var(--gold);text-decoration:none;font-weight:600;opacity:0.95}
+    nav a:hover{color:#fff;text-decoration:none}
+    .cta-btn{
+      background:var(--gold);color:#000;padding:10px 18px;border-radius:10px;font-weight:700;
+      box-shadow:0 6px 24px rgba(226,221,180,0.08);transition:transform .18s ease, box-shadow .18s;
+    }
+    .cta-btn:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(226,221,180,0.08)}
+
+    /* Mobile hamburger */
+    .hamburger{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;background:transparent;border:1px solid rgba(226,221,180,0.06)}
+    .hamburger svg{display:block}
+
+    /* Hero */
+    .hero {
+      min-height:92vh;
+      display:grid;place-items:center;position:relative;padding:110px 0 90px;
+      overflow:hidden;
+    }
+    .hero__bg{
+      position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;
+      transform-origin:center;
+    }
+    /* gradient film + grain */
+    .film{
+      position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.65));z-index:1;
+    }
+    .grain{
+      position:absolute;inset:0;z-index:2;pointer-events:none;background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="g"><feTurbulence baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23g)" opacity="0.03"/></svg>');
+      mix-blend-mode:overlay;
+    }
+    .hero-content{position:relative;z-index:10;text-align:center;max-width:1050px;padding:40px 18px}
+    .hero h1{font-size:clamp(46px,8vw,110px);line-height:0.85;margin:0}
+    .hero h2{font-size:clamp(18px,2.2vw,34px);margin-top:8px;opacity:0.95}
+    .hero p{max-width:760px;margin:18px auto 28px;color:var(--muted);font-size:1.05rem}
+
+    .ghost-cta{display:inline-flex;gap:12px;align-items:center;padding:14px 18px;border-radius:12px;border:1px solid rgba(226,221,180,0.12);background:transparent}
+    .ghost-cta svg{width:18px;height:18px;opacity:0.9}
+
+    /* Gallery */
+    .section {padding:92px 0}
+    .section h3{font-size:2.8rem}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .tile{
+      position:relative;overflow:hidden;border-radius:14px;background:#0b0b0b;border:1px solid rgba(226,221,180,0.04);
+      transition:transform .6s cubic-bezier(.2,.9,.3,1), box-shadow .25s;
+    }
+    .tile img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1);transition:transform .9s ease}
+    .tile .meta{
+      position:absolute;left:16px;bottom:16px;z-index:6;background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.6));
+      padding:10px 12px;border-radius:10px;border:1px solid rgba(226,221,180,0.06);
+      backdrop-filter:blur(6px);font-weight:700
+    }
+    .tile:hover{transform:translateY(-10px);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+    .tile:hover img{transform:scale(1.07)}
+
+    /* Artists grid */
+    .artists-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .artist{
+      padding:22px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(226,221,180,0.04);text-align:center;transition:transform .28s;
+    }
+    .artist img{width:112px;height:112px;border-radius:999px;object-fit:cover;margin:0 auto 14px;border:4px solid rgba(0,0,0,0.4)}
+    .artist h4{font-size:1.4rem;margin:6px 0}
+    .artist p{font-size:0.95rem;color:var(--muted)}
+
+    /* Contact form */
+    .form-card{padding:26px;border-radius:12px;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55));border:1px solid rgba(226,221,180,0.04)}
+    input, textarea{
+      width:100%;padding:12px 14px;border-radius:10px;background:transparent;border:1px solid rgba(226,221,180,0.06);color:var(--gold);
+      outline:none;font-size:1rem;resize:none;
+    }
+    input::placeholder, textarea::placeholder{color:rgba(226,221,180,0.36)}
+    .form-actions{display:flex;gap:12px;align-items:center;justify-content:flex-end;margin-top:12px}
+
+    /* Footer */
+    footer{padding:36px 0;border-top:1px solid rgba(226,221,180,0.03);text-align:center;color:rgba(226,221,180,0.5)}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);z-index:200}
+    .lightbox img{max-width:92%;max-height:86%;border-radius:8px;box-shadow:0 10px 60px rgba(0,0,0,0.8)}
+
+    /* Preloader */
+    .preloader{
+      position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#000,#070707);display:flex;align-items:center;justify-content:center;flex-direction:column;
+    }
+    .preloader .logoMark{width:84px;height:84px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#fff);display:grid;place-items:center;font-weight:800;color:#000;font-size:28px}
+    .preloader .line{width:260px;height:6px;border-radius:6px;background:rgba(255,255,255,0.03);margin-top:18px;position:relative;overflow:hidden}
+    .preloader .line .bar{position:absolute;left:-10%;top:0;bottom:0;background:linear-gradient(90deg, transparent, var(--gold), transparent);width:40%;transform:skewX(-14deg);animation:loader 2s linear infinite}
+
+    @keyframes loader{0%{left:-40%}100%{left:120%}}
+
+    /* Responsiveness */
+    @media (max-width:1024px){
+      .grid-3{grid-template-columns:repeat(2,1fr)}
+      .artists-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:720px){
+      nav ul{display:none}
+      .grid-3{grid-template-columns:1fr}
+      .artists-grid{grid-template-columns:1fr}
+      .hero{padding:120px 0 60px}
+      .hero h1{font-size:48px}
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none!important;animation:none!important}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader" class="preloader" aria-hidden="false">
+    <div class="logoMark bebas">AG</div>
+    <div style="margin-top:14px;color:var(--muted);font-weight:600">Aggressive Tattoo Studio</div>
+    <div class="line" aria-hidden="true"><div class="bar"></div></div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-hidden="true" aria-label="Image preview">
+    <button id="lightboxClose" aria-label="Close preview" style="position:absolute;top:28px;right:28px;background:transparent;border:none;color:var(--gold);font-size:20px;padding:8px;z-index:210">✕</button>
+    <img id="lightboxImage" src="" alt="Expanded artwork">
+  </div>
+
+  <!-- Header / Nav -->
+  <header>
+    <div class="wrap nav-inner">
+      <a class="logo" href="#home" aria-label="Aggressive Tattoo Home">
+        <div class="mark" aria-hidden="true"><div class="mark-inner mark" style="display:grid;place-items:center;width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--gold),#fff);color:#000;font-weight:800">AG</div></div>
+        <div>
+          <div class="bebas text-xl" style="letter-spacing:0.06em">AGGRESSIVE</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:-2px">TATTOO STUDIO</div>
+        </div>
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <ul>
+          <li><a href="#home">HOME</a></li>
+          <li><a href="#gallery">GALLERY</a></li>
+          <li><a href="#artists">ARTISTS</a></li>
+          <li><a href="#about">ABOUT</a></li>
+          <li><a href="#contact">CONTACT</a></li>
+        </ul>
+      </nav>
+
+      <div style="display:flex;align-items:center;gap:12px">
+        <a href="#contact" class="cta-btn">Book Now</a>
+        <button id="hambtn" class="hamburger" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+          <!-- animated lines -->
+          <svg width="20" height="14" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path class="line1" d="M2 2h20"></path>
+            <path class="line2" d="M2 7h20"></path>
+            <path class="line3" d="M2 12h20"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile full-screen nav -->
+    <div id="mobileMenu" aria-hidden="true" class="fixed inset-0 z-50 bg-black/95 hidden">
+      <div class="wrap" style="padding-top:90px;">
+        <ul style="display:flex;flex-direction:column;gap:18px;font-size:22px;">
+          <li><a href="#home" class="mobile-link">HOME</a></li>
+          <li><a href="#gallery" class="mobile-link">GALLERY</a></li>
+          <li><a href="#artists" class="mobile-link">ARTISTS</a></li>
+          <li><a href="#about" class="mobile-link">ABOUT</a></li>
+          <li><a href="#contact" class="mobile-link">CONTACT</a></li>
+        </ul>
+        <div style="margin-top:28px;color:var(--muted)">
+          <div>Phone: (555) 123-4567</div>
+          <div style="margin-top:6px">Email: info@aggressivetattoo.com</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section id="home" class="hero" role="region" aria-label="Home - Aggressive Tattoo Studio">
+      <div id="heroBg" class="hero__bg" style="background-image:url('https://images.unsplash.com/photo-1592434304555-39ad2030e2ea?auto=format&fit=crop&w=1800&q=80');filter:contrast(0.95) brightness(0.7);transform:translateZ(0)"></div>
+      <div class="film" aria-hidden="true"></div>
+      <div class="grain" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:10px">
+          <div style="color:var(--muted);text-transform:uppercase;font-size:12px;font-weight:700">Since 2015</div>
+        </div>
+
+        <h1 class="bebas gradient" style="background:linear-gradient(90deg,var(--gold),#ffffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent">AGGRESSIVE</h1>
+        <h2 class="bebas" style="color:var(--gold);font-size:20px;margin-bottom:8px">TATTOO STUDIO — THE ART OF PERMANENT EXPRESSION</h2>
+        <p>We craft bold, timeless tattoos — from hyper-realism portraits to heavy blackwork and delicate geometric lines. Your story. Your skin. Executed with precision and the highest hygiene standards.</p>
+
+        <div style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a class="cta-btn" href="#contact">Book Appointment</a>
+          <button id="exploreBtn" class="ghost-cta" aria-label="Explore Gallery">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:16px;height:16px"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            Explore Work
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="section" aria-label="Gallery">
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:12px">
+      <h3 class="bebas">OUR WORK</h3>
+      <div style="color:var(--muted)">Hand-picked pieces — updated monthly</div>
+    </div>
+
+    <div style="height:18px"></div>
+
+    <div class="grid-3" id="galleryGrid">
+      <!-- Tile 1 -->
+      <figure class="tile" data-full="https://images.unsplash.com/photo-1602524209293-e15c9f1f6f92?auto=format&fit=crop&w=1600&q=80" tabindex="0">
+        <img loading="lazy" alt="Traditional Tattoo" src="./images/t1.jpg" />
+      </figure>
+
+      <!-- Tile 2 -->
+      <figure class="tile" data-full="https://images.unsplash.com/photo-1556228453-5b9bfae4f3cf?auto=format&fit=crop&w=1600&q=80" tabindex="0">
+        <img loading="lazy" alt="Realism Tattoo" src="./images/t2.jpg" />
+      </figure>
+
+      <!-- Tile 3 -->
+      <figure class="tile" data-full="https://images.unsplash.com/photo-1604147706283-84f9e3f2a1b3?auto=format&fit=crop&w=1600&q=80" tabindex="0">
+        <img loading="lazy" alt="Geometric Tattoo" src="./images/t3.jpg" />
+      </figure>
+    </div>
+
+    <!-- Explore More Button -->
+    <div style="margin-top:30px;text-align:center;cursor: pointer;">
+      <button id="exploreMoreBtn" class="ghost-cta" aria-label="Explore more works">
+        Explore More Works
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Full Gallery Modal ====== -->
+
+
+    <!-- ARTISTS -->
+    <!-- ====== ARTIST ====== -->
+<section id="artists" class="section bg-black/60" aria-label="Artist">
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:end">
+      <h3 class="bebas">MEET THE ARTIST</h3>
+      <div style="color:var(--muted)">Every piece by Amal — a story etched in skin</div>
+    </div>
+
+    <div style="height:18px"></div>
+
+    <div class="artists-grid" style="grid-template-columns:1fr">
+      <div class="artist" tabindex="0">
+        <img alt="Amal" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=60" loading="lazy">
+        <h4 class="bebas">AMAL</h4>
+        <p>Specialist in realism and fine-line tattoos — blending emotion, depth, and precision since 2015.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+    <!-- ABOUT -->
+    <section id="about" class="section" aria-label="About">
+      <div class="wrap" style="display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center">
+        <div>
+          <h3 class="bebas">ABOUT US</h3>
+          <p style="color:var(--muted);margin-top:12px;max-width:760px">Aggressive Tattoo Studio is a sanctuary for lasting expression. Since 2015 we've combined technical mastery with storytelling to create tattoos that age beautifully. We follow strict sterilization standards and only use premium inks and disposable supplies.</p>
+
+          <ul style="margin-top:18px;display:grid;gap:10px;color:var(--muted)">
+            <li><strong>Hygiene:</strong> Hospital-grade sterilization & single-use needles.</li>
+            <li><strong>Consultation:</strong> Free in-studio design consults & digital mockups.</li>
+            <li><strong>Guarantee:</strong> Touch-up policy for healed work (terms apply).</li>
+          </ul>
+
+          <div style="margin-top:18px;display:flex;gap:12px">
+            <a class="ghost-cta" href="#gallery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:14px;height:14px"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> View Portfolio</a>
+            <a class="ghost-cta" href="#contact">Contact Studio</a>
+          </div>
+        </div>
+
+        <aside class="form-card" aria-label="Studio hours & contact">
+          <h4 class="bebas" style="margin-bottom:8px">Studio Hours</h4>
+          <div style="color:var(--muted)">Mon–Sat: 11:00 AM – 9:00 PM<br>Sun: 12:00 PM – 6:00 PM</div>
+          <div style="height:12px"></div>
+          <div style="color:var(--muted);font-size:14px">123 Ink Street<br>Downtown District<br>City, State 12345</div>
+          <div style="height:14px"></div>
+          <div style="display:flex;gap:12px">
+            <a class="cta-btn" href="tel:+15551234567">Call Studio</a>
+            <a class="ghost-cta" href="mailto:info@aggressivetattoo.com">Email</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section bg-black/60" aria-label="Contact">
+      <div class="wrap">
+        <div style="display:grid;grid-template-columns:1fr 420px;gap:22px;align-items:start">
+          <div>
+            <h3 class="bebas">GET IN TOUCH</h3>
+            <p style="color:var(--muted);margin-top:8px">Use the form to send booking requests or general inquiries. We'll reply within 24–48 hours.</p>
+
+            <form id="contactForm" class="form-card" novalidate>
+              <label class="sr-only" for="name">Name</label>
+              <input id="name" name="name" type="text" placeholder="Your name" required>
+
+              <div style="height:10px"></div>
+
+              <label class="sr-only" for="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="Your email" required>
+
+              <div style="height:10px"></div>
+
+              <label class="sr-only" for="message">Message</label>
+              <textarea id="message" name="message" rows="5" placeholder="Tell us about your idea" required></textarea>
+
+              <div class="form-actions">
+                <div id="formMsg" style="color:var(--muted);font-size:14px"></div>
+                <div style="flex:1"></div>
+                <button type="submit" class="cta-btn" aria-live="polite">Send Message</button>
+              </div>
+            </form>
+          </div>
+
+          <aside style="color:var(--muted)">
+            <h4 class="bebas">Visit / Book</h4>
+            <div style="margin-top:8px">Drop by for a consultation — or book an appointment online. Deposits required for multi-session pieces.</div>
+
+            <div style="height:16px"></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div><strong>Phone:</strong> (555) 123-4567</div>
+              <div><strong>Email:</strong> info@aggressivetattoo.com</div>
+              <div><strong>Address:</strong> 123 Ink Street, Downtown District</div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <div class="bebas" style="font-size:20px">AGGRESSIVE</div>
+          <div style="font-size:12px;color:var(--muted)">© 2025 Aggressive Tattoo Studio</div>
+        </div>
+        <div style="color:var(--muted)">Made with craft & precision</div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="galleryModal" class="lightbox" role="dialog" aria-hidden="true" aria-label="Full gallery">
+  <button id="closeGalleryModal" aria-label="Close gallery" style="position:absolute;top:28px;right:28px;background:transparent;border:none;color:var(--gold);font-size:20px;padding:8px;z-index:210">✕</button>
+  <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-height:88vh;overflow:auto;padding:30px;">
+    <img src="./images/t1.jpg" alt="Tattoo sample 1" loading="lazy">
+    <img src="./images/t2.jpg" alt="Tattoo sample 2" loading="lazy">
+    <img src="./images/t3.jpg" alt="Tattoo sample 3" loading="lazy">
+    <img src="./images/t4.jpg" alt="Tattoo sample 4" loading="lazy">
+    <img src="./images/t5.jpg" alt="Tattoo sample 5" loading="lazy">
+    <img src="./images/t6.jpg" alt="Tattoo sample 6" loading="lazy">
+  </div>
+</div>
+
+
+  <!-- SCRIPTS -->
+  <script>
+
+    (function(){
+    const openBtn = document.getElementById('exploreMoreBtn');
+    const modal = document.getElementById('galleryModal');
+    const closeBtn = document.getElementById('closeGalleryModal');
+
+    openBtn.addEventListener('click', ()=>{
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    });
+    closeBtn.addEventListener('click', ()=>{
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow='';
+    });
+    modal.addEventListener('click', (e)=>{
+      if(e.target===modal){
+        modal.style.display='none';
+        modal.setAttribute('aria-hidden','true');
+        document.body.style.overflow='';
+      }
+    });
+  })();
+    // ====== CONFIG ======
+    const FORM_ENDPOINT = 'https://formspree.io/f/mzzpkwqj'; // <-- replace with your Formspree form endpoint
+
+    // Polyfills: ensure GSAP present (we linked CDN)
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ====== Preloader ======
+    (function(){
+      const pre = document.getElementById('preloader');
+      // Minimum display 700ms, hide after window load
+      window.addEventListener('load', () => {
+        setTimeout(()=> {
+          pre.style.transition = 'opacity .6s ease, transform .6s';
+          pre.style.opacity = 0;
+          pre.style.transform = 'translateY(-8px)';
+          pre.setAttribute('aria-hidden','true');
+          setTimeout(()=> pre.remove(), 700);
+        }, 500);
+      });
+    })();
+
+    // ====== MOBILE NAV TOGGLE (with simple a11y focus trap) ======
+    (function(){
+      const hambtn = document.getElementById('hambtn');
+      const mobile = document.getElementById('mobileMenu');
+      const mobileLinks = mobile.querySelectorAll('a');
+
+      function openMobile(){
+        mobile.classList.remove('hidden'); mobile.setAttribute('aria-hidden','false');
+        hambtn.setAttribute('aria-expanded','true');
+        document.body.style.overflow = 'hidden';
+        mobileLinks[0].focus();
+      }
+      function closeMobile(){
+        mobile.classList.add('hidden'); mobile.setAttribute('aria-hidden','true');
+        hambtn.setAttribute('aria-expanded','false');
+        document.body.style.overflow = '';
+        hambtn.focus();
+      }
+
+      hambtn.addEventListener('click', () => {
+        if(mobile.classList.contains('hidden')) openMobile(); else closeMobile();
+      });
+
+      mobile.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobile));
+      // close on ESC
+      window.addEventListener('keydown', (e)=> { if(e.key === 'Escape' && !mobile.classList.contains('hidden')) closeMobile(); });
+    })();
+
+    // ====== Smooth scroll for anchor links ======
+    (function(){
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', (e)=>{
+          const href = a.getAttribute('href');
+          if(!href || href === '#') return;
+          const target = document.querySelector(href);
+          if(target){
+            e.preventDefault();
+            target.scrollIntoView({behavior:'smooth',block:'start'});
+          }
+        });
+      });
+    })();
+
+    // ====== Hero Parallax via GSAP ======
+    (function(){
+      const bg = document.getElementById('heroBg');
+      gsap.to(bg, {
+        yPercent: 14,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#home",
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+
+      // Hero text reveal
+      gsap.from(".hero h1", { y: 80, opacity: 0, duration: 1.1, ease: "power3.out", delay: 0.12 });
+      gsap.from(".hero h2", { y: 30, opacity: 0, duration: 0.9, delay: 0.28 });
+      gsap.from(".hero p", { y: 18, opacity: 0, duration: 0.9, delay: 0.4 });
+      gsap.from(".cta-btn", { scale: 0.95, opacity: 0, duration: 0.8, delay: 0.6, ease: "back.out(1.2)" });
+    })();
+
+    // ====== Gallery lightbox (vanilla) ======
+    (function(){
+      const tiles = document.querySelectorAll('.tile');
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightboxImage');
+      const closeBtn = document.getElementById('lightboxClose');
+
+      function open(url, alt){
+        lbImg.src = url;
+        lbImg.alt = alt || 'Artwork preview';
+        lightbox.style.display = 'flex';
+        lightbox.setAttribute('aria-hidden','false');
+      }
+      function close(){
+        lightbox.style.display = 'none';
+        lightbox.setAttribute('aria-hidden','true');
+        lbImg.src = '';
+      }
+      tiles.forEach(tile=>{
+        tile.addEventListener('click', ()=> open(tile.dataset.full, tile.querySelector('img').alt));
+        tile.addEventListener('keydown', (e) => { if(e.key === 'Enter') open(tile.dataset.full, tile.querySelector('img').alt); });
+      });
+      closeBtn.addEventListener('click', close);
+      lightbox.addEventListener('click', (e)=> { if(e.target === lightbox) close(); });
+      window.addEventListener('keydown', (e)=> { if(e.key === 'Escape') close(); });
+    })();
+
+    // ====== Reveal animations for sections ======
+    (function(){
+      gsap.utils.toArray('.section').forEach(section=>{
+        gsap.fromTo(section.querySelectorAll('h3, p, .tile, .artist'), { y: 20, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.9, stagger: 0.08,
+          scrollTrigger: { trigger: section, start: 'top 80%' }
+        });
+      });
+    })();
+
+    // ====== Simple form submission with validation & fetch to Formspree ======
+    (function(){
+      const form = document.getElementById('contactForm');
+      const msgEl = document.getElementById('formMsg');
+
+      form.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        msgEl.textContent = '';
+        const name = form.name.value.trim();
+        const email = form.email.value.trim();
+        const message = form.message.value.trim();
+
+        if(!name || !email || !message){
+          msgEl.textContent = 'Please fill all fields.';
+          return;
+        }
+        // Basic email format check
+        if(!/^\S+@\S+\.\S+$/.test(email)){
+          msgEl.textContent = 'Please provide a valid email.';
+          return;
+        }
+
+        // Visual submit state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const oldText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+
+        try{
+          const res = await fetch(FORM_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ name, email, message })
+          });
+          if(res.ok){
+            msgEl.style.color = 'var(--gold)';
+            msgEl.textContent = 'Message sent — we will reply within 48 hours.';
+            form.reset();
+          } else {
+            const data = await res.json().catch(()=>({}));
+            throw new Error(data.error || 'Failed to send.');
+          }
+        }catch(err){
+          msgEl.style.color = 'rgb(255,120,120)';
+          msgEl.textContent = 'Could not send. Try again or email us directly.';
+          console.warn(err);
+        } finally {
+          submitBtn.textContent = oldText;
+          submitBtn.disabled = false;
+        }
+      });
+    })();
+
+    // ====== Lazy reveal using IntersectionObserver for better perf ======
+    (function(){
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting) {
+            e.target.classList.add('in-view');
+            io.unobserve(e.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+      document.querySelectorAll('.tile, .artist').forEach(el => io.observe(el));
+    })();
+
+    // ====== Explore btn scroll ======
+    document.getElementById('exploreBtn').addEventListener('click', ()=> {
+      document.getElementById('gallery').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+
+    // ====== Accessibility helpers: add .sr-only class ======
+    (function(){
+      const css = '.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}';
+      const s = document.createElement('style'); s.appendChild(document.createTextNode(css)); document.head.appendChild(s);
+    })();
+  </script>
+</body>
+</html>
